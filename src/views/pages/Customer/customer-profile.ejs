@@ -1,0 +1,60 @@
+<link rel="stylesheet" href="/css/customercss/customer-profile.css">
+<div class="customerprofilecontainer">
+    <h1>Customer Dashboard</h1>
+   
+        <div class="profile-left-side">
+        <div class="imageandname">
+            <img src="/uploads/customers/<%= user.customerprofilephoto %>" alt="">
+            <h2><%= user.customerusername %></h2>
+        </div>
+        <div class="customeraddress">
+            <div><b>Email:</b> <%= user.customeremail %></div>
+            <div><b>WhatsApp Number :</b> <%= user.customerwhatsapp %></div>
+            <div><b><u>Address</u></b> </div>
+            <div><b>Area:</b>  <%= user.customercity %></div>
+            <div><b>Country:</b>  <%= user.customercountry %></div>
+            <div><b>Unit No.:</b>  <%= user.customerunitno %></div>
+            <div><b>Building No.:</b> <%= user.customerbuildingno %></div>
+            <div><b>Street No.:</b>  <%= user.customerstreetno %></div>
+            <div><b>Zone No.:</b>  <%= user.customerzoneno %></div>
+            <div><b>Map Location:</b>  <%= user.customerlocation %></div>
+            <div class="editdelete">
+                <a href="/edit-profile/<%= user._id %>"><i class="fa-solid fa-pencil"></i> Edit Profile</a>
+            </div>
+        </div>
+    </div>
+    
+    
+    <div class="profile-right-side">
+        <h4><b><u>Order Details</u></b></h4>
+        <% if(orders.length>0){ %>
+        <div class="orderdetails">
+            <% orders.forEach(order=>{ %>
+                <div class="ordercontainer">
+                    <div>
+                        <p>Store Name: <%= order.store?.storeName || order.store %></p>
+                    </div>
+                    <div><%= order.storecategory %></div>
+                    <div>Total Amount: <%= order.grandtotal %> <%= order.currency %></div>
+                <div><b>Date:</b> <%= new Date(order.createdAt).toLocaleDateString() %></div>
+                    <button type="button" class="view-order-btn" onclick="document.getElementById('order-<%= order._id %>').showModal()">View Order</button>
+                    <dialog id="order-<%= order._id %>"><h3>Order Details</h3><p>Store: <%= order.store?.storeName || order.store %></p><p>Category: <%= order.storecategory %></p><% order.productsname.forEach((name,i)=>{ %><p><b><%= name %></b> — Qty: <%= order.productsquantities[i] %> — <%= order.productsprices[i] %> <%= order.currency %></p><% }) %><p><b>Total: <%= order.grandtotal %> <%= order.currency %></b></p><button type="button" onclick="this.closest('dialog').close()">Close</button></dialog>
+                </div>
+            <% }) %>
+
+        </div>
+        <div class="pagination">
+            <% if(hasPrevPage) { %>
+                <a style="text-decoration: underline;" href="?page=<%= prevPage %>">Previous</a>
+            <% } %>
+
+            <span>Page <%= currentPage %> of <%= totalPages %></span>
+
+            <% if(hasNextPage) { %>
+                <a style="text-decoration: underline;" href="?page=<%= nextPage %>">Next</a>
+            <% } %>
+            </div>
+        <% } %>
+        
+    </div>
+</div>
