@@ -29,7 +29,7 @@
     border-radius: 15px;
 }
 .storesection,.storesectionSubscribed{
-    width:240px;
+    width:300px;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -100,3 +100,88 @@
     }
 }
 .store-rating{background:none;border:0;cursor:pointer;font-weight:700;padding:5px 0;color:inherit;} dialog{border:0;border-radius:12px;padding:24px;max-width:360px;} dialog::backdrop{background:rgba(0,0,0,.45);}
+
+
+.store-rating {
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    padding: 5px 0;
+    font-family: inherit;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.rating-stars {
+    display: inline-flex;
+    gap: 2px;
+}
+
+.star {
+    color: #d5d5d5;
+    font-size: 20px;
+    line-height: 1;
+}
+
+.star.filled {
+    color: #f15a24;
+}
+
+.review-text {
+    color: #555;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.store-rating:hover .review-text {
+    color: #f15a24;
+}
+
+.store-rating:hover .star {
+    color: #f15a24;
+}
+
+
+/* Review Popup */
+.review-dialog {
+    width: min(430px, 90%);
+    border: none;
+    border-radius: 15px;
+    padding: 25px;
+    background: #fff;
+    box-shadow: 0 20px 60px rgba(0,0,0,.25);
+}
+
+.review-dialog::backdrop {
+    background: rgba(0,0,0,.55);
+}
+
+.review-dialog h3 {
+    margin: 0 0 15px;
+    color: #222;
+}
+
+.review-dialog p {
+    color: #555;
+}
+
+.review-dialog a {
+    display: inline-block;
+    margin: 10px 0;
+    padding: 10px 16px;
+    background: #f15a24;
+    color: #fff;
+    border-radius: 7px;
+    text-decoration: none;
+}
+
+.review-dialog button {
+    display: block;
+    margin-top: 10px;
+    padding: 9px 16px;
+    border: none;
+    border-radius: 7px;
+    background: #eee;
+    cursor: pointer;
+}
