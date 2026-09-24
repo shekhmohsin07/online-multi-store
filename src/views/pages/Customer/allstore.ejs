@@ -151,71 +151,76 @@
                     <h2><%= store.storeName %></h2>
                     <p class="cityaddress">Area: <%= store.storecity %></p>
                     <p>
-                        <span class="cityaddress unit"><b>Unit</b> <%= store.storeunitno %></span>,
-                        <span class="cityaddress buiding"><b>Building</b> <%= store.storebuildingno %>,</span>
-                        <span class="cityaddress street"><b>Street</b> <%= store.storestreetno %>,</span>
-                        <span class="cityaddress zone"><b>Zone</b> <%= store.storezoneno %></span>
+                        <span class="cityaddress unit"><b>Unit-</b> <%= store.storeunitno %></span>,
+                        <span class="cityaddress buiding"><b>Building-</b> <%= store.storebuildingno %>,</span>
+                        <span class="cityaddress street"><b>Street-</b> <%= store.storestreetno %>,</span>
+                        <span class="cityaddress zone"><b>Zone-</b> <%= store.storezoneno %></span>
                     </p>
                     <p class="cityaddress businesstime"><b>Working Time:</b> <%= formatTime12h(store.storeopen) %>-<%= formatTime12h(store.storeclose) %></p>
                     <p class="cityaddress delivery"><b>Delivery:</b> <%= store.homeDelivery %></p>
                        
 
-                        <!-- Customer Reviews -->
-<button
-    type="button"
-    class="store-rating"
-    onclick="document.getElementById('reviews-<%= store._id %>').showModal()"
-    title="See Customer Reviews">
+                    <!-- Customer Reviews -->
+                    <button
+                        type="button"
+                        class="store-rating"
+                        onclick="document.getElementById('reviews-<%= store._id %>').showModal()"
+                        title="See Customer Reviews">
+                        <span class="rating-stars">
+                        <span class="review-text">Customer Reviews</span>
+                    </button>              
+                    <button
+                        type="button"
+                        class="store-rating"
+                        onclick="document.getElementById('reviews-<%= store._id %>').showModal()"
+                        title="See Customer Reviews">
+                        <span class="rating-stars">
+                            <% 
+                                const rating = Number(store.rating || 0);
+                                const fullStars = Math.floor(rating);
+                            %>
 
-    <span class="rating-stars">
-        <% 
-            const rating = Number(store.rating || 0);
-            const fullStars = Math.floor(rating);
-        %>
+                            <% for (let i = 1; i <= 5; i++) { %>
+                                <% if (i <= fullStars) { %>
+                                    <span class="star filled">★</span>
+                                <% } else { %>
+                                    <span class="star">★</span>
+                                <% } %>
+                            <% } %>
+                        </span>
+                    </button>
 
-        <% for (let i = 1; i <= 5; i++) { %>
-            <% if (i <= fullStars) { %>
-                <span class="star filled">★</span>
-            <% } else { %>
-                <span class="star">★</span>
-            <% } %>
-        <% } %>
-    </span>
+                    <!-- Customer Reviews Popup -->
+                    <dialog id="reviews-<%= store._id %>" class="review-dialog">
 
-    <span class="review-text">See Customer Reviews</span>
-</button>
+                        <h3>See Customer Reviews</h3>
 
-<!-- Customer Reviews Popup -->
-<dialog id="reviews-<%= store._id %>" class="review-dialog">
+                        <p>
+                            Customer rating:
+                            <span class="rating-stars">
+                                <% for (let i = 1; i <= 5; i++) { %>
+                                    <% if (i <= fullStars) { %>
+                                        <span class="star filled">★</span>
+                                    <% } else { %>
+                                        <span class="star">★</span>
+                                    <% } %>
+                                <% } %>
+                            </span>
 
-    <h3>See Customer Reviews</h3>
+                            <strong><%= rating %>/5</strong>
+                        </p>
 
-    <p>
-        Customer rating:
-        <span class="rating-stars">
-            <% for (let i = 1; i <= 5; i++) { %>
-                <% if (i <= fullStars) { %>
-                    <span class="star filled">★</span>
-                <% } else { %>
-                    <span class="star">★</span>
-                <% } %>
-            <% } %>
-        </span>
+                        <a href="/store/<%= store._id %>#customer-reviews">
+                            View Customer Reviews
+                        </a>
 
-        <strong><%= rating %>/5</strong>
-    </p>
+                        <button
+                            type="button"
+                            onclick="this.closest('dialog').close()">
+                            Close
+                        </button>
 
-    <a href="/store/<%= store._id %>#customer-reviews">
-        View Customer Reviews
-    </a>
-
-    <button
-        type="button"
-        onclick="this.closest('dialog').close()">
-        Close
-    </button>
-
-</dialog>
+                    </dialog>
                     
                     <br>
                     <% if(isOpen(store.storeopen, store.storeclose)=='Open'){ %>
