@@ -1023,9 +1023,11 @@ router.get('/master-products',verifyStore,verifyStoreRole("Seller"),async (req,r
         {
           products,
           categoryCounts,
-          activeUrl, 
+          activeUrl,
           currentPage: page,
-          totalPages
+          totalPages,
+          search,
+          productSearchOptions
         })
   } catch (error) {
     console.log(error)
