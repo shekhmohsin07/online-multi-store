@@ -928,6 +928,114 @@ router.post('/store/delete/:storeid',verifyStore,verifyStoreRole("Seller"),async
 })
 
 //add product from master data 
+// router.get('/master-products',verifyStore,verifyStoreRole("Seller"),async (req,res)=>{
+//   try {
+//         const userId = req.user.id; // logged-in user id (from session/JWT/etc.)
+//         const search = req.query.searchproducts || ""; // search term from GET query
+//         const linkSearch = req.query.subcategory || ""; // search term from GET query
+//         const page = parseInt(req.query.page) || 1; // current page, default 1
+//         const limit = 20; // items per page, you can change
+
+
+//         //get store 
+//         const userStore = await sellerSchema.findById(userId)
+//         //find all user products
+//         const userProducts = await Product.find({ store: userId }, "productorigin");
+//         //find products that has origin id match to users products
+//         const originsToHide = userProducts.map(p => p.productorigin).filter(Boolean).map(id => new mongoose.Types.ObjectId(id)); 
+
+//         // Build query
+//         let query = {
+//             store: { $ne: new mongoose.Types.ObjectId(userId) }, 
+//             _id: { $nin: originsToHide }
+//           };
+
+//         // Always include productorigin null/missing
+//         const productOriginFilter = [
+//           { productorigin: { $exists: false } },
+//           { productorigin: null }
+//           ];
+
+//           // Search filter (from search input)
+//           const searchFilter = [];
+//           if (search) {
+//             searchFilter.push(
+//               { productname: { $regex: search, $options: "i" } },
+//               { subcategory: { $regex: search, $options: "i" } }
+//             );
+//           }
+
+//           // Link filter (from subcategory link)
+//           const linkFilter = [];
+//           if (linkSearch) {
+//             linkFilter.push({ subcategory: { $regex: linkSearch, $options: "i" } });
+//           }
+        
+//           // Combine filters
+//           if (searchFilter.length || linkFilter.length) {
+//             query.$and = [
+//               { $or: productOriginFilter },
+//               ...(searchFilter.length ? [{ $or: searchFilter }] : []),
+//               ...(linkFilter.length ? [{ $or: linkFilter }] : [])
+//             ];
+//           } else {
+//             query.$or = productOriginFilter;
+//           }
+      
+      
+//       // Get total count for pagination
+//         const totalProducts = await Product.countDocuments(query);
+//         const totalPages = Math.ceil(totalProducts / limit);
+
+//         // Get paginated products
+//         const productSearchOptions = await Product.find({...query}, {productname:1}).sort({productname:1}).limit(1000);
+//         const products = await Product.find(query)
+//             .skip((page - 1) * limit)
+//             .limit(limit);
+
+
+//       //find which category has how many products
+//       const categoryCounts = await Product.aggregate([
+//         {
+//           $match: {
+//             store: { $ne:  new mongoose.Types.ObjectId(userId) },
+//             category:userStore.storeCategory,
+//             _id:  {$nin: originsToHide},
+//             $or: [
+//               { productorigin: { $exists: false } },
+//               { productorigin: null },
+//             ]
+//           }
+//         },
+//         {
+//           $group: {
+//             _id: "$subcategory",  // group by category field
+//             count: { $sum: 1 } // count number of products in each category
+//           }
+//         },
+//         {
+//           $sort: { count: -1 } // optional: sort by count descending
+//         }
+//       ]);
+//       //console.log(req.query.subcategory)
+//       let activeUrl =req.query.subcategory
+//       res.render('pages/Store/addfrom-masterdata',
+//         {
+//           products,
+//           categoryCounts,
+//           activeUrl,
+//           currentPage: page,
+//           totalPages,
+//           search,
+//           productSearchOptions
+//         })
+//   } catch (error) {
+//     console.log(error)
+//   }
+  
+// })
+
+
 router.get('/master-products',verifyStore,verifyStoreRole("Seller"),async (req,res)=>{
   try {
         const userId = req.user.id; // logged-in user id (from session/JWT/etc.)
@@ -1036,47 +1144,265 @@ router.get('/master-products',verifyStore,verifyStoreRole("Seller"),async (req,r
 })
 
 //add product from masterdata
-router.post('/master-products',verifyStore,verifyStoreRole("Seller"),async (req,res)=>{
-  try {
-        let {
-      productname,
-      productimg,
-      subcategory,
-      sku,
-      productprice,
-      productofferprice,
-      currency,
-      productorigin} = req.body
+// router.post('/master-products',verifyStore,verifyStoreRole("Seller"),async (req,res)=>{
+//   try {
+//         let {
+//       productname,
+//       productimg,
+//       subcategory,
+//       sku,
+//       productprice,
+//       productofferprice,
+//       currency,
+//       productorigin} = req.body
 
-      let store = await sellerSchema.findOne({_id:req.user.id})
-      if(!store) return res.redirect('/store-dashboard')
-      const existingCopy = await Product.findOne({productorigin: productorigin });
-      if(existingCopy){
-        req.flash('error_msg',"Product Already exist in Store!")
-        return res.redirect('/master-products')
-      }
-        //creating product
-          await Product.create({
-              productname: productname,
-              store: store._id,
-              subcategory:subcategory ,
-              category:store.storeCategory,
-              productimage:productimg,
-              productprice: productprice,
-              productofferprice:productofferprice,
-              currency: currency,
-              sku:sku,
-              productorigin:productorigin,
-        })
-      req.flash('success_msg',"Product Added to Store Successfully!")
-      res.redirect('/master-products')
+//       let store = await sellerSchema.findOne({_id:req.user.id})
+//       if(!store) return res.redirect('/store-dashboard')
+//       const existingCopy = await Product.findOne({productorigin: productorigin });
+//       if(existingCopy){
+//         req.flash('error_msg',"Product Already exist in Store!")
+//         return res.redirect('/master-products')
+//       }
+//         //creating product
+//           await Product.create({
+//               productname: productname,
+//               store: store._id,
+//               subcategory:subcategory ,
+//               category:store.storeCategory,
+//               productimage:productimg,
+//               productprice: productprice,
+//               productofferprice:productofferprice,
+//               currency: currency,
+//               sku:sku,
+//               productorigin:productorigin,
+//         })
+//       req.flash('success_msg',"Product Added to Store Successfully!")
+//       res.redirect('/master-products')
 
-  } catch (error) {
-    console.log(error)
-  }
+//   } catch (error) {
+//     console.log(error)
+//   }
   
 
-})
+// })
+
+router.post(
+  '/master-products',
+  verifyStore,
+  verifyStoreRole("Seller"),
+  async (req, res) => {
+
+    try {
+
+      const {
+        productorigin
+      } = req.body;
+
+
+      /* =========================================
+         VALIDATE PRODUCT ID
+      ========================================== */
+
+      if (
+        !productorigin ||
+        !mongoose.Types.ObjectId.isValid(
+          productorigin
+        )
+      ) {
+
+        req.flash(
+          "error_msg",
+          "Invalid Master Product."
+        );
+
+        return res.redirect(
+          "/master-products"
+        );
+
+      }
+
+
+      /* =========================================
+         GET CURRENT STORE
+      ========================================== */
+
+      const store =
+        await sellerSchema.findById(
+          req.user.id
+        );
+
+
+      if (!store) {
+
+        req.flash(
+          "error_msg",
+          "Store not found."
+        );
+
+        return res.redirect(
+          "/store-dashboard"
+        );
+
+      }
+
+
+      /* =========================================
+         FIND ORIGINAL MASTER PRODUCT
+         
+         It must:
+         - exist
+         - not belong to current store
+         - belong to same category
+         - not already be a copied product
+      ========================================== */
+
+      const masterProduct =
+        await Product.findOne({
+
+          _id: productorigin,
+
+          store: {
+            $ne: store._id
+          },
+
+          category:
+            store.storeCategory,
+
+          $or: [
+            {
+              productorigin: {
+                $exists: false
+              }
+            },
+            {
+              productorigin: null
+            }
+          ]
+
+        });
+
+
+      if (!masterProduct) {
+
+        req.flash(
+          "error_msg",
+          "Master Product not found or unavailable."
+        );
+
+        return res.redirect(
+          "/master-products"
+        );
+
+      }
+
+
+      /* =========================================
+         CHECK IF THIS PRODUCT ALREADY EXISTS
+         IN CURRENT STORE
+      ========================================== */
+
+      const existingCopy =
+        await Product.findOne({
+
+          store: store._id,
+
+          productorigin:
+            masterProduct._id
+
+        });
+
+
+      if (existingCopy) {
+
+        req.flash(
+          "error_msg",
+          "Product Already exists in Store!"
+        );
+
+        return res.redirect(
+          "/master-products"
+        );
+
+      }
+
+
+      /* =========================================
+         CREATE STORE PRODUCT
+         
+         Data comes from DB masterProduct,
+         NOT from hidden input fields.
+      ========================================== */
+
+      await Product.create({
+
+        productname:
+          masterProduct.productname,
+
+        store:
+          store._id,
+
+        category:
+          store.storeCategory,
+
+        subcategory:
+          masterProduct.subcategory,
+
+        productimage:
+          masterProduct.productimage,
+
+        productprice:
+          masterProduct.productprice,
+
+        productofferprice:
+          masterProduct.productofferprice,
+
+        currency:
+          masterProduct.currency,
+
+        sku:
+          masterProduct.sku,
+
+        productorigin:
+          masterProduct._id
+
+      });
+
+
+      /* =========================================
+         SUCCESS
+      ========================================== */
+
+      req.flash(
+        "success_msg",
+        "Product Added to Store Successfully!"
+      );
+
+
+      return res.redirect(
+        "/master-products"
+      );
+
+
+    } catch (error) {
+
+      console.error(
+        "Add Master Product Error:",
+        error
+      );
+
+      req.flash(
+        "error_msg",
+        "Unable to add product."
+      );
+
+      return res.redirect(
+        "/master-products"
+      );
+
+    }
+
+  }
+);
 
 
 
